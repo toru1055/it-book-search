@@ -24,9 +24,21 @@ public class ItemService {
     @PersistenceContext
     EntityManager entityManager;
 
+    @Autowired
+    private SearchItemRepository searchItemRepository;
+
+    @Transactional
+    public void train(int requestId, int keyId) {
+        searchItemRepository.train(requestId, keyId);
+    }
+
     @Transactional
     public void initialize() {
         entityManager.createNativeQuery("CREATE SEARCH INDEX IF NOT EXISTS s1 ON item (search_text)").executeUpdate();
+        entityManager.createNativeQuery("CREATE MLR_TEMPLATE IF NOT EXISTS mt1 KEY(id) " +
+                "'SELECT * FROM SEARCH(item, search_text, ?)'").executeUpdate();
+        entityManager.createNativeQuery("CREATE MLR_MODEL IF NOT EXISTS mm1 WITH mt1 (" +
+                "item_price, review_count, review_average, sales_year, _similarity)").executeUpdate();
     }
 
     public List<ItemEntity> trends() {
@@ -36,9 +48,9 @@ public class ItemService {
         return itemEntityList.subList(0, to);
     }
 
-    public List<ItemEntity> search(String query) {
+    public List<SearchItemEntity> search(String query) {
         String normalizedQuery = StringUtils.normalize(query);
-        List<ItemEntity> itemDtoList = itemRepository.search(normalizedQuery);
+        List<SearchItemEntity> itemDtoList = searchItemRepository.search(normalizedQuery);
         int to = Math.min(30, itemDtoList.size());
         return itemDtoList.subList(0, to);
     }

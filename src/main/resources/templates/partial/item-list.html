@@ -11,14 +11,16 @@
             <div class="card mb-3" v-for="item in items">
                 <div class="row g-0">
                     <div class="col-md-3 text-center">
-                        <a :href="'/item/' + item.id">
+                        <a :href="'/item/' + item.id" :data-request_id="item.requestId" :data-key_id="item.keyId"
+                           onclick="train_mlr(this.dataset)">
                             <img class="img-thumbnail" :src="item.largeImageUrl" :alt="item.title">
                         </a>
                     </div>
                     <div class="col-md-9">
                         <div class="card-body">
                             <h3 class="card-title fs-5">
-                                <a :href="'/item/' + item.id" class="link-primary">
+                                <a :href="'/item/' + item.id" class="link-primary" :data-request_id="item.requestId" :data-key_id="item.keyId"
+                                   onclick="train_mlr(this.dataset)">
                                     {{item.title}} {{item.subTitle}}
                                 </a>
                             </h3>
