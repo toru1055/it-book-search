@@ -2,6 +2,7 @@ package com.hottydb.booksearch.api;
 
 import com.hottydb.booksearch.item.ItemEntity;
 import com.hottydb.booksearch.item.ItemService;
+import com.hottydb.booksearch.item.SearchItemEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,8 +26,15 @@ public class ItemRestController {
 
     @GetMapping("/api/items/search")
     @ResponseBody
-    public List<ItemEntity> search(@RequestParam("q") String query) {
+    public List<SearchItemEntity> search(@RequestParam("q") String query) {
         return itemService.search(query);
+    }
+
+    @GetMapping("/api/items/search/click")
+    @ResponseBody
+    public boolean click(@RequestParam("request_id") int requestId, @RequestParam("key_id") int keyId) {
+        itemService.train(requestId, keyId);
+        return true;
     }
 
     @GetMapping("/api/items/similar")

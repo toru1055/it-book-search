@@ -47,6 +47,11 @@
         });
         return rec_items.slice(0, 30);
     };
+
+    const train_mlr = function(item) {
+        if (item.request_id == null || item.key_id == null) return;
+        fetch("/api/items/search/click?request_id="+item.request_id+"&key_id="+item.key_id);
+    }
 </script>
 <div id="header" th:replace="~{partial/header :: header}"></div>
 <div id="body" th:replace="${body}"></div>
