@@ -15,9 +15,9 @@ interface ItemRepository extends JpaRepository<ItemEntity, Integer> {
             "ORDER BY x.reviewCount DESC, x.reviewAverage DESC, x.itemPrice DESC")
     List<ItemEntity> trendItems(@Param("minSalesYear") int minSalesYear, @Param("minReviewCount") int minReviewCount);
 
-    @Query("SELECT x FROM ItemEntity x WHERE x.searchText LIKE %?1% ORDER BY x.salesYear DESC")
+    @Query(value = "SELECT * FROM SEARCH(item, search_text, :q) ORDER BY _similarity DESC", nativeQuery = true)
     List<ItemEntity> search(@Param("q") String q);
 
-    @Query("SELECT x FROM ItemEntity x WHERE x.searchText LIKE %?1% ORDER BY x.salesYear DESC")
+    @Query(value = "SELECT * FROM SEARCH(item, search_text, :seedTitle, OR) ORDER BY _similarity DESC", nativeQuery = true)
     List<ItemEntity> similarItems(@Param("seedTitle") String seedTitle);
 }

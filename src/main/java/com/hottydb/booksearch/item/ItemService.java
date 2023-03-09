@@ -5,7 +5,10 @@ import com.hottydb.booksearch.rakuten.book.BooksBook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -17,6 +20,14 @@ public class ItemService {
     private ItemRepository itemRepository;
     @Value("${ItemService.trends.minReviewCount}")
     private int trendsMinReviewCount;
+
+    @PersistenceContext
+    EntityManager entityManager;
+
+    @Transactional
+    public void initialize() {
+        entityManager.createNativeQuery("CREATE SEARCH INDEX IF NOT EXISTS s1 ON item (search_text)").executeUpdate();
+    }
 
     public List<ItemEntity> trends() {
         int minYear = Calendar.getInstance().get(Calendar.YEAR) - 1;
@@ -35,7 +46,6 @@ public class ItemService {
     public List<ItemEntity> similarItems(int seedId) {
         Optional<ItemEntity> seedItem = itemRepository.findById(seedId);
         String normalizedQuery = StringUtils.normalize(seedItem.get().getTitle());
-        normalizedQuery = normalizedQuery.substring(0, 3);
         List<ItemEntity> itemEntityList = itemRepository.similarItems(normalizedQuery);
         itemEntityList.removeIf(x -> x.getId() == seedId);
         int to = Math.min(30, itemEntityList.size());
