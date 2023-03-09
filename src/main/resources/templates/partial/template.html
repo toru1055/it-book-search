@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ja" xmlns:th="http://www.thymeleaf.org" th:fragment="layout (title, body)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1.0">
+    <link rel="icon" th:href="@{/image/favicon.ico}" />
+    <link rel="apple-touch-icon" th:href="@{/image/logo.png}" />
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}" />
+
+    <meta name="description" th:content="${description}"/>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- 開発バージョン、便利なコンソールの警告が含まれています -->
+<!--    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>-->
+    <!-- 本番バージョン、サイズと速度のために最適化されています -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+
+    <title th:text="${title}">Hotty技術書検索</title>
+</head>
+<body>
+<script>
+    const update_user_items = function(seed_id, items) {
+        let histories = JSON.parse(localStorage.getItem("histories")) || [];
+        if (histories.includes(seed_id)) return;
+        histories.push(seed_id);
+        if (histories.length > 5) histories.pop();
+        localStorage.setItem("histories", JSON.stringify(histories));
+
+        let user_items = JSON.parse(localStorage.getItem("user_items")) || {};
+        for (let k in user_items) user_items[k] = Math.round(user_items[k] * 9) / 10;
+        items.forEach((item) => {
+            if (!user_items[item.id]) user_items[item.id] = 0.0;
+            user_items[item.id] = user_items[item.id] + 1.0;
+        });
+        localStorage.setItem("user_items", JSON.stringify(user_items));
+    };
+
+    const get_user_items = function(seed_id = null) {
+        let rec_items = [];
+        let histories = JSON.parse(localStorage.getItem("histories")) || [];
+        let user_items = JSON.parse(localStorage.getItem("user_items")) || {};
+        Object.keys(user_items).sort(function(a, b) {
+            return user_items[b] - user_items[a];
+        }).forEach(function (k) {
+            if (!histories.includes(k) && k != seed_id) rec_items.push(k);
+        });
+        return rec_items.slice(0, 30);
+    };
+</script>
+<div id="header" th:replace="~{partial/header :: header}"></div>
+<div id="body" th:replace="${body}"></div>
+<div id="footer" th:replace="~{partial/footer :: footer}"></div>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{partial/template :: layout(${title},~{::body/content()})}">
+<body>
+<div class="top-banner">
+    <img src="/image/logo.png" width="100%">
+</div>
+<main class="container">
+    <div class="mb-5">
+        <h2>Hotty技術書検索とは？</h2>
+        <p>
+            Hotty技術書検索は、技術書の検索とレコメンデーションのサービスです。<br>
+            HottyDBという次世代型RDBMSを利用して作られており、その機能を紹介するために作られたサイトです。
+        </p>
+
+        <h4>主な機能</h4>
+        <dl>
+            <dt>キーワード検索機能</dt>
+            <dd>
+                検索ボックスにキーワードを入力すれば、そのキーワードに関連する技術書の一覧を表示します。
+                検索結果は機械学習により最適なランキングで表示されるようになっています。
+            </dd>
+
+            <dt>関連書籍機能</dt>
+            <dd>
+                技術書を選択すると、その技術書と類似した技術書が関連書籍として表示されます。
+            </dd>
+
+            <dt>あなたにおすすめ機能</dt>
+            <dd>
+                過去に閲覧した書籍から「あなたにおすすめ」の技術書を表示します。
+                履歴を削除するには、
+                <a href="javascript:localStorage.clear(); location.reload();">「おすすめ用の履歴を削除」</a>
+                のリンクをクリックしてください。
+            </dd>
+        </dl>
+
+    </div>
+
+    <div class="mb-5">
+        <h2>HottyDBとは？</h2>
+        <p>
+            HottyDBは、検索エンジンとレコメンドエンジンの機能を搭載したデータベース（RDBMS）です。<br>
+            より詳しくHottyDBについて知りたい方は、
+            <a href="https://www.hottydb.com/" target="_blank">こちら</a>を参照してください。
+        </p>
+    </div>
+
+    <div class="mb-5">
+        <h2>運営社情報</h2>
+        <p>
+            「Hotty技術書検索」は、HottyDBが運営しています。
+            連絡先は<a href="https://www.hottydb.com/other/contact/"　target="_blank">こちら</a>です。
+        </p>
+    </div>
+</main>

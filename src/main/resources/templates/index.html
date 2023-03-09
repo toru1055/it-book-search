@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{partial/template :: layout(${title},~{::body/content()})}">
+<body>
+<div class="top-banner">
+    <img src="/image/logo.png" width="100%">
+</div>
+<main class="container">
+    <form class="d-flex mb-5" action="/search" method="get">
+        <input class="form-control me-2" type="search" name="q" placeholder="検索キーワード" aria-label="Search">
+        <button class="btn btn-success text-nowrap" type="submit">検索</button>
+    </form>
+    <div class="mb-5">
+        <h2>Hotty技術書検索とは？</h2>
+        <p>
+            Hotty技術書検索は、技術書の検索とレコメンデーションのサービスです。<br>
+            HottyDBという次世代型RDBMSを利用して作られており、その機能を紹介するために作られたサイトです。<br>
+            <a href="https://www.hottydb.com/" target="_blank">HottyDBについてはこちら</a>を参照してください。
+        </p>
+    </div>
+
+    <hr>
+
+    <div class="row row-cols-1 row-cols-xl-2 mt-5">
+        <div class="col order-xl-2 mb-5">
+            <h2>あなたにおすすめ</h2>
+            <div id="user-items">
+                <div th:replace="~{partial/item-list :: item-list}"></div>
+            </div>
+            <a href="javascript:localStorage.clear(); location.reload();">おすすめ用の履歴を削除</a>
+        </div>
+        <div class="col order-xl-1 mb-5">
+            <h2>人気の技術書</h2>
+            <div id="trend-items">
+                <div th:replace="~{partial/item-list :: item-list}"></div>
+            </div>
+        </div>
+    </div>
+</main>
+<script>
+    var trend_items = new Vue({
+      el: '#trend-items',
+      data: {items: [], loaded: false}
+    });
+    fetch("/api/items/trends")
+        .then(response => response.json())
+        .then(items => {
+            trend_items.items = items;
+            trend_items.loaded = true;
+        });
+
+    let ids = get_user_items().join(",");
+    var user2items = new Vue({
+        el: '#user-items',
+        data: {items: [], loaded: false}
+    });
+    fetch("/api/items/list?ids=" + ids)
+        .then(response => response.json())
+        .then(items => {
+            user2items.items = items;
+            user2items.loaded = true;
+        });
+</script>
+</body>
+</html>

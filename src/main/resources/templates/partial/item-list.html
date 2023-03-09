@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>商品一覧</title>
+</head>
+<body>
+<div th:fragment="item-list" th:remove="tag">
+    <div class="item-list">
+        <div v-if="loaded">
+            <div class="card mb-3" v-for="item in items">
+                <div class="row g-0">
+                    <div class="col-md-3 text-center">
+                        <a :href="'/item/' + item.id">
+                            <img class="img-thumbnail" :src="item.largeImageUrl" :alt="item.title">
+                        </a>
+                    </div>
+                    <div class="col-md-9">
+                        <div class="card-body">
+                            <h3 class="card-title fs-5">
+                                <a :href="'/item/' + item.id" class="link-primary">
+                                    {{item.title}} {{item.subTitle}}
+                                </a>
+                            </h3>
+                            <p class="card-text">
+                            <div>著者: {{item.author}}</div>
+                            <div>
+                                <span class="star5_rating" :data-rate="item.reviewRating"></span>
+                                <span class="fs-4">{{item.reviewAverage}}</span>
+                                <span><small class="text-muted">(レビュー{{item.reviewCount}}件)</small></span>
+                            </div>
+                            <div>
+                                <small class="text-muted">{{item.salesDate}}発売 / {{item.publisherName}}</small>
+                            </div>
+                            <div>
+                                <small v-if="item.keywords.length" class="me-1">キーワード: </small>
+                                <span v-for="keyword in item.keywords" class="me-1">
+                                    <a :href="'/search?q=' + keyword">{{keyword}}</a>
+                                </span>
+                            </div>
+                            <div>
+                                <span class="fs-5 text-danger">{{item.itemPrice.toLocaleString()}}円</span>(税込)
+                            </div>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div v-else class="text-center m-5 p-5">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

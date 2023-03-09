@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{partial/template :: layout(${title},~{::body/content()})}">
+<body>
+<main class="container">
+    <form class="d-flex mt-5 mb-5" action="/search" method="get">
+        <input class="form-control me-2" type="search" name="q"
+               placeholder="検索キーワード" aria-label="Search" th:value="${query}">
+        <button class="btn btn-success text-nowrap" type="submit">検索</button>
+    </form>
+    <div class="mb-5">
+        <h1>「<span th:text="${query}" id="search-query" th:data-query="${query}">キーワード</span>」の検索結果</h1>
+        <div id="search-items">
+            <div th:replace="~{partial/item-list :: item-list}"></div>
+        </div>
+    </div>
+
+</main>
+<script>
+    let query = document.getElementById("search-query").dataset.query;
+    var search_items = new Vue({
+      el: '#search-items',
+      data: {items: [], loaded: false}
+    });
+    fetch("/api/items/search?q=" + encodeURIComponent(query))
+        .then(response => response.json())
+        .then(items => {
+            console.log(items);
+            search_items.items = items;
+            search_items.loaded = true;
+        });
+</script>
+</body>
+</html>
